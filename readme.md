@@ -10,9 +10,9 @@ This project contains scripts used for car / payByCarFace detection and also the
 
 *You need to create a credentials directory and config_dev.yml, config_prod.yml in them
 
-## Sample run for dev
+## Sample run for prod
 python3.9  -m src.app --prod
 
-## Sample run for prod
+## Sample run for dev
 python3.9  -m src.app 
 

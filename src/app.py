@@ -5,6 +5,9 @@ import yaml
 import sys
 import json
 
+from src.service import server
+from src.utilities.benchmark import benchmark
+
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 parser = argparse.ArgumentParser("Run Chargee Station Manager")
@@ -32,6 +35,10 @@ def main():
             print(exc)
 
     print(f"Station UUID:{args.station['uuid']}")
+
+    with benchmark(logger, "fetch jwt"):
+        jwt_token = server.fetch_jwt_token(args, logger)
+        print(f"JWT token:{jwt_token}")
 
 
 if __name__ == "__main__":
