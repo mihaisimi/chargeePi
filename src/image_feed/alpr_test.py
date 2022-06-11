@@ -95,7 +95,7 @@ while True:
     now = datetime.now().timestamp() * 1000
     if (len(results['results'])>0):
         bestResult = results['results'][0]
-        if (bestResult['confidence'] > 88):
+        if (bestResult['confidence'] > 84):
             plateMatch = re.search("[A-Z][A-Z][0-9][0-9][A-Z][A-Z][A-Z]",bestResult['plate'])
 
             if (plateMatch and len(bestResult['plate']) > 6 and len(bestResult['plate']) < 9 and checkJudet(bestResult['plate'].upper())):
