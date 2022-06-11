@@ -9,12 +9,15 @@ import random
 from threading import Thread
 from time import sleep
 
+
 cap= cv2.VideoCapture(0)
 
 last_seen = 0
 last_plate_detected = ''
 charging = False
 tickThread = ''
+
+charging_on_pin = 21
 
 def is_raspberrypi():
     if os.name != 'posix':
@@ -32,6 +35,13 @@ def is_raspberrypi():
         pass
     return False
 
+def raspiInit():
+    if (is_raspberrypi()):
+        import RPi.GPIO as GPIO
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(charging_on_pin, GPIO.OUT)
+
+
 def enable_charging():
     global charging
     charging = True
@@ -39,6 +49,8 @@ def enable_charging():
     tickThread = Thread(target=chargingTick)
     tickThread.start()
     if (is_raspberrypi()):
+        import RPi.GPIO as GPIO
+        GPIO.output(charging_on_pin, GPIO.HIGH)
         print("change gpio")
 
 def disabled_charging():
@@ -46,6 +58,8 @@ def disabled_charging():
     charging = False
     print("DISABLE_CHARGING")
     if (is_raspberrypi()):
+        import RPi.GPIO as GPIO
+        GPIO.output(charging_on_pin, GPIO.LOW)
         print("change gpio")
 
 
