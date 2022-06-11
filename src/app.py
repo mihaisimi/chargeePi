@@ -40,6 +40,9 @@ def main():
         jwt_token = server.fetch_jwt_token(args, logger)
         print(f"JWT token:{jwt_token}")
 
+    with benchmark(logger, "get handshake by id"):
+        server.get_handshake_by_id(args, jwt_token, "1", logger)
+
 
 if __name__ == "__main__":
     # noinspection PyInterpreter
