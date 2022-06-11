@@ -5,12 +5,16 @@ from datetime import datetime
 import re
 import io
 import os
+import random
+from threading import Thread
+from time import sleep
 
 cap= cv2.VideoCapture(0)
 
 last_seen = 0
 last_plate_detected = ''
 charging = False
+tickThread = ''
 
 def is_raspberrypi():
     if os.name != 'posix':
@@ -29,12 +33,16 @@ def is_raspberrypi():
     return False
 
 def enable_charging():
+    global charging
     charging = True
     print("CHARGIN ENABLED")
+    tickThread = Thread(target=chargingTick)
+    tickThread.start()
     if (is_raspberrypi()):
         print("change gpio")
 
 def disabled_charging():
+    global charging
     charging = False
     print("DISABLE_CHARGING")
     if (is_raspberrypi()):
@@ -49,6 +57,16 @@ def checkJudet(str):
             return True
     return False
 
+def chargingTick():
+    print("charging tick started")
+    while True:
+        sleep(1) 
+        power_kWh = random.random() * 45
+        print("charging tick - power: "+str(power_kWh)+" kWh")
+        global charging
+        if (not charging):
+            break
+    print("charging tick ended")
 
 alpr = Alpr("eu", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
 if not alpr.is_loaded():
