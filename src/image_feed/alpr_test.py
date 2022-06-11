@@ -82,6 +82,8 @@ def chargingTick():
             break
     print("charging tick ended")
 
+
+raspiInit()
 alpr = Alpr("eu", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
 if not alpr.is_loaded():
     print("Error loading OpenALPR")
