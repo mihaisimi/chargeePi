@@ -117,7 +117,7 @@ class carDetector:
                         self.last_seen = now
                         if onCarDetected:
                             onCarDetected(self.last_plate_detected)
-                        self.enable_charging(onStartCharging, onChargingUpdate)
+                        #self.enable_charging(onStartCharging, onChargingUpdate)
                     else:
                         self.last_seen = now
 
@@ -126,8 +126,9 @@ class carDetector:
                 last_seen_dif = now - self.last_seen
                 if ( (last_seen_dif) > 5000):
                     print("licence lost: "+self.last_plate_detected)
+                    onCarLost(self.last_plate_detected)
                     self.last_plate_detected=""
-                    self.disabled_charging(onStopCharging)
+                    #self.disabled_charging(onStopCharging)
 
 
 

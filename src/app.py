@@ -22,11 +22,15 @@ args = parser.parse_args()
 
 cap = cv2.VideoCapture(0)
 
+detector = carDetector()
+
 def onCarDetected(licencePlate):
     print("onCarDetected: "+licencePlate)
+    startCharging()
 
-def onCarLost():
-    print("onCarLost")
+def onCarLost(licencePlate):
+    print("onCarLost: "+licencePlate)
+    stopCharging()
 
 def onStartCharging():
     print("onStartCharging")
@@ -36,6 +40,12 @@ def onStopCharging():
 
 def onChargingUpdate(powerKWH):
     print("onChargingUpdate - charging: "+str(powerKWH)+" kWH")
+
+def startCharging():
+    detector.enable_charging(onStartCharging, onChargingUpdate)
+
+def stopCharging():
+    detector.disabled_charging(onStopCharging)
 
 def main():               
 
@@ -67,7 +77,7 @@ def main():
     with benchmark(logger, "send detect handshake"):
         server.send_car_detected(args, jwt_token, "TM13REV", None, logger)
 
-    detector = carDetector()
+   
     detector.initalizeDetector()
     if not cap.isOpened():
         raise IOError("Cannot open webcam")
