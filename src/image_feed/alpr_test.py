@@ -116,7 +116,7 @@ while True:
     else:
         if (len(last_plate_detected) > 0):
             last_seen_dif = now - last_seen
-            if ( (last_seen_dif) > 10000):
+            if ( (last_seen_dif) > 5000):
                 print("licence lost: "+last_plate_detected)
                 last_plate_detected=""
                 disabled_charging()
