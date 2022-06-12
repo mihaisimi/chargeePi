@@ -43,6 +43,8 @@ def main():
     with benchmark(logger, "get handshake by id"):
         server.get_handshake_by_id(args, jwt_token, "1", logger)
 
+    with benchmark(logger, "send detect handshake"):
+        server.send_detect_handshake(args, jwt_token, "TM13REV", logger)
 
 if __name__ == "__main__":
     # noinspection PyInterpreter
