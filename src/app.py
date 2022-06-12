@@ -1,12 +1,15 @@
 import logging
 import os
 import argparse
+from time import sleep
 import yaml
 import sys
 import json
+import cv2
 
 from src.service import server
 from src.utilities.benchmark import benchmark
+from src.image_feed.carDetector import carDetector
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -17,8 +20,25 @@ parser.add_argument('--testApi', help='if true we will test the API', action='st
 
 args = parser.parse_args()
 
+cap = cv2.VideoCapture(0)
 
-def main():
+def onCarDetected(licencePlate):
+    print("onCarDetected: "+licencePlate)
+
+def onCarLost():
+    print("onCarLost")
+
+def onStartCharging():
+    print("onStartCharging")
+
+def onStopCharging():
+    print("onStopCharging")
+
+def onChargingUpdate(powerKWH):
+    print("onChargingUpdate - charging: "+str(powerKWH)+" kWH")
+
+def main():               
+
     prod = args.prod
 
     config_file = f"{__location__}/../credentials/config_dev.yml"
@@ -47,6 +67,18 @@ def main():
     with benchmark(logger, "send detect handshake"):
         server.send_car_detected(args, jwt_token, "TM13REV", logger)
 
+    detector = carDetector()
+    detector.initalizeDetector()
+    if not cap.isOpened():
+        raise IOError("Cannot open webcam")
+
+    while True:
+        detector.processFrame(cap, onCarDetected, onCarLost, onStartCharging, onStopCharging, onChargingUpdate)
+        c = cv2.waitKey(1)
+        if c == 27:
+            break
+
+    detector.releaseDetector()     
 
 if __name__ == "__main__":
     # noinspection PyInterpreter
