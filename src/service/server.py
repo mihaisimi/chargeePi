@@ -58,16 +58,21 @@ def get_handshake_by_id(args, jwt_token, id, logger):
     return charge_handshake
 
 
-def send_car_detected(args, jwt_token, id, logger):
-    url = args.server['url']+"/api/charge-handshakes/"+id
-    headers = {"Authorization": "Bearer "+jwt_token, "Accept": "application/json"}
-    #
-    # response = requests.get(url, headers=headers, timeout=10)
-    # if response and response.status_code == 200:
-    #     charge_handshake = ChargeHandshake.from_json(response.content)
-    #     pprint(charge_handshake)
-    # return charge_handshake
-    return None
+def send_car_detected(args, jwt_token, carPlate, pictureBinary, logger):
+    url = args.server['url']+"/api/charge-handshakes/"
+    headers = {"Authorization": "Bearer "+jwt_token, "Accept": "application/json", "Content-Type": "application/json"}
+    car_detected_handshake = ChargeHandshake(0, None, 'DETECTED', 0, carPlate, "", "image/png", None, None)
+    car_detected_handshake_json = car_detected_handshake.to_json()
+
+    response = requests.post(url, headers=headers, data=car_detected_handshake_json, timeout=10)
+    if response and response.status_code == 200:
+         charge_handshake = ChargeHandshake.from_json(response.content)
+         pprint(charge_handshake)
+         return charge_handshake
+    else:
+        logger.error(f"Error accessing {url} for post, will NAN")
+        return None
+
 
 def send_charging_update (args, jwt_token, charge_handshake, logger) :
     return charge_handshake

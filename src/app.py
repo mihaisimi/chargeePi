@@ -45,7 +45,7 @@ def main():
         server.get_handshake_by_id(args, jwt_token, "1", logger)
 
     with benchmark(logger, "send detect handshake"):
-        server.send_car_detected(args, jwt_token, "TM13REV", logger)
+        server.send_car_detected(args, jwt_token, "TM13REV", None, logger)
 
 
 if __name__ == "__main__":
