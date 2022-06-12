@@ -24,9 +24,13 @@ cap = cv2.VideoCapture(0)
 
 detector = carDetector()
 
+jwt_token = ""
+
 def onCarDetected(licencePlate):
-    print("onCarDetected: "+licencePlate)
+    global jwt_token
+    print("onCarDetected: "+licencePlate+" jwt: "+jwt_token)
     startCharging()
+    server.send_car_detected(args, jwt_token, licencePlate, None, logger)
 
 def onCarLost(licencePlate):
     print("onCarLost: "+licencePlate)
@@ -48,7 +52,7 @@ def stopCharging():
     detector.disabled_charging(onStopCharging)
 
 def main():               
-
+    global jwt_token
     prod = args.prod
 
     config_file = f"{__location__}/../credentials/config_dev.yml"
@@ -74,8 +78,8 @@ def main():
     with benchmark(logger, "get handshake by id"):
         server.get_handshake_by_id(args, jwt_token, "1", logger)
 
-    with benchmark(logger, "send detect handshake"):
-        server.send_car_detected(args, jwt_token, "TM13REV", None, logger)
+    # with benchmark(logger, "send detect handshake"):
+        
 
    
     detector.initalizeDetector()
